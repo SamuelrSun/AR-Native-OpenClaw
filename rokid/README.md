@@ -102,6 +102,61 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 The companion app needs to be running on the Rokid glasses (or the connected phone) before the OpenClaw plugin can connect.
 
+---
+
+## Roadmap
+
+### Phase 1 — Companion App & WebSocket Bridge
+
+Build the Android companion app that exposes Rokid's UXR SDK over WebSocket.
+
+**1a. Companion app (Android/Kotlin)**
+- [ ] Android project scaffolding (Gradle, min SDK, Rokid UXR SDK dependency)
+- [ ] WebSocket server running on the glasses / connected phone (port 9820)
+- [ ] Camera access: capture 12MP photos via UXR SDK, send as binary WebSocket frames
+- [ ] Camera access: stream video frames (MJPEG or H.264) over WebSocket
+- [ ] Microphone capture via Android AudioRecord, stream PCM over WebSocket
+- [ ] Speaker playback via Android AudioTrack from incoming WebSocket audio
+- [ ] Touchpad gesture forwarding (tap, swipe, back) as JSON events
+- [ ] AR text overlay rendering via UXR SDK from incoming WebSocket commands
+- [ ] AR image overlay rendering via UXR SDK from incoming WebSocket commands
+- [ ] Clear overlay command handler
+- [ ] Persistent foreground service to keep WebSocket alive
+- [ ] Auto-discovery via mDNS/Zeroconf so the plugin can find the companion on the LAN
+
+**1b. Node.js plugin bridge**
+- [x] `RokidCompanionBridge` class with WebSocket client, auto-reconnect, event routing
+- [x] JSON command protocol (`display_text`, `display_image`, `capture_photo`, `start_mic`, etc.)
+- [x] Binary message protocol (0x01 = video frame, 0x02 = audio chunk)
+- [ ] mDNS discovery to auto-find the companion app on the local network
+- [ ] Handle companion app disconnect / reconnect gracefully
+- [ ] Buffer outbound commands while reconnecting
+
+**1c. OpenClaw plugin wiring**
+- [x] Plugin entry point with channel + tools
+- [x] Channel adapter (outbound text, image, audio; inbound transcription, gestures, photos)
+- [x] Agent tools: `rokid_display_text`, `rokid_display_image`, `rokid_clear_display`, `rokid_capture_photo`, `rokid_start_camera_stream`, `rokid_stop_camera_stream`, `rokid_start_listening`, `rokid_stop_listening`
+- [ ] Pipe inbound mic audio through shared STT adapter
+- [ ] Pipe inbound camera frames to OpenClaw for multimodal LLM analysis
+- [ ] End-to-end test: speak to Rokid → see LLM response as AR overlay
+
+---
+
+### Phase 2 — On-Device AI & Advanced SDK Features
+
+Leverage the Rokid AR1 chip and full Android SDK for richer integration.
+
+- [ ] Explore Rokid AR1 chip on-device inference (object detection, OCR)
+- [ ] Pipe on-device detections as context to OpenClaw agent alongside LLM
+- [ ] Real-time translation overlay (mic → STT → translate → display)
+- [ ] Navigation overlay (receive turn-by-turn from OpenClaw, render via UXR)
+- [ ] 3D AR overlay support via Unity UXR SDK (separate Unity companion app)
+- [ ] Multi-language live subtitle rendering
+- [ ] Investigate Rokid Glasses open ecosystem: ChatGPT / DeepSeek / Gemini model routing
+- [ ] Support Rokid Station 2 dock as alternative host for the companion app
+
+---
+
 ## References
 
 - [Rokid AR Platform SDK](https://ar.rokid.com/sdk?lang=en) -- official SDK downloads

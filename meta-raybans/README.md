@@ -128,6 +128,69 @@ open MetaRBCompanion.xcworkspace
 # Build and run from Xcode
 ```
 
+---
+
+## Roadmap
+
+### Phase 1 — Companion App & DAT Integration
+
+Build the iOS + Android companion apps wrapping Meta's Wearables Device Access Toolkit.
+
+**1a. Android companion app (Kotlin)**
+- [ ] Android project scaffolding (Gradle, GitHub Packages for `mwdat-*` artifacts)
+- [ ] Integrate `mwdat-core` for pairing and device lifecycle
+- [ ] Integrate `mwdat-camera` for 12MP photo capture
+- [ ] Integrate `mwdat-camera` for video streaming
+- [ ] Access 5-mic array via Android Bluetooth audio profile
+- [ ] Access open-ear speakers via Android Bluetooth audio profile
+- [ ] WebSocket server on phone (port 9821)
+- [ ] Forward camera frames as binary WebSocket messages
+- [ ] Forward mic audio as binary WebSocket messages
+- [ ] Receive and play audio from WebSocket on speakers
+- [ ] TTS engine (Android TextToSpeech or cloud) for `speak` command
+- [ ] Mock Device Kit integration for testing without hardware
+
+**1b. iOS companion app (Swift)**
+- [ ] Xcode project scaffolding with DAT Swift SDK via CocoaPods
+- [ ] Integrate DAT core for pairing and device lifecycle
+- [ ] Camera capture and streaming via DAT
+- [ ] Mic access via iOS Bluetooth audio profile
+- [ ] Speaker output via iOS Bluetooth audio profile
+- [ ] WebSocket server on phone (port 9821)
+- [ ] Binary protocol for camera + audio streaming
+- [ ] TTS via AVSpeechSynthesizer or cloud for `speak` command
+
+**1c. Node.js plugin bridge**
+- [x] `MetaDATBridge` class with WebSocket client, auto-reconnect, event routing
+- [x] JSON + binary message protocol
+- [ ] mDNS discovery for companion auto-detection
+- [ ] Graceful reconnect with command buffering
+
+**1d. OpenClaw plugin wiring**
+- [x] Plugin entry point with channel + tools
+- [x] Channel adapter (outbound via TTS since no HUD; inbound from camera + mic)
+- [x] Agent tools: `meta_rb_capture_photo`, `meta_rb_start_camera_stream`, `meta_rb_stop_camera_stream`, `meta_rb_start_listening`, `meta_rb_stop_listening`, `meta_rb_play_audio`, `meta_rb_speak`
+- [ ] Pipe inbound mic audio through shared STT adapter
+- [ ] Pipe inbound camera frames to OpenClaw for multimodal LLM analysis
+- [ ] End-to-end test: speak to Ray-Bans → hear LLM response through speakers
+
+---
+
+### Phase 2 — HUD & Future DAT Capabilities
+
+Track Meta's DAT roadmap and add support as new capabilities land.
+
+- [ ] Monitor DAT updates for Ray-Ban Display HUD access (currently not exposed)
+- [ ] When available: send text/images to HUD display
+- [ ] Monitor DAT updates for Meta AI ("Hey Meta") integration
+- [ ] When available: intercept "Hey Meta" and route through OpenClaw LLM
+- [ ] Monitor DAT updates for Neural Band gesture access
+- [ ] When available: map gestures to configurable agent actions
+- [ ] Support Meta's expected 2026 public publishing of integrations (exit developer preview)
+- [ ] Investigate community workarounds (Messenger bot API, WhatsApp integration) as interim HUD-less UX
+
+---
+
 ## References
 
 - [Meta Wearables Developer Portal](https://developers.meta.com/wearables/) -- SDK access and docs
