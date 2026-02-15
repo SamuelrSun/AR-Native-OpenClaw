@@ -1,0 +1,33 @@
+{
+  "name": "@ar-openclaw/even-g2",
+  "version": "0.1.0",
+  "description": "OpenClaw plugin for Even Realities G2 smart glasses",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "openclaw": {
+    "extensions": {
+      "ar-openclaw-even-g2": {
+        "entry": "dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "node --test dist/**/*.test.js",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@abandonware/noble": "^1.9.2-25",
+    "@ar-openclaw/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "openclaw": "*"
+  }
+}
